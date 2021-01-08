@@ -1,15 +1,14 @@
-from PIL import Image
+from PIL import Image, ImageGrab
 import os
 import numpy as np
-# creating an image object 
+import cv2
+import datetime
 
-# while True:
-#     im = ImageGrab.grab()
-#     dt = datetime.now()
-#     fname = "pic_{}.{}.png".format(dt.strftime("%H%M_%S"), dt.microsecond // 100000)
-#     im.save(fname, 'png') 
+def printScreen():
+    im = ImageGrab.grab()
+    fname = "pic_{}.{}.png")
+    im.save(fname, 'png') 
 
-# heroes = []
 
 def getTopBar(img_path):
     img_orig = Image.open(img_path) 
@@ -87,36 +86,11 @@ def matchHero(img):
     width, height = img.size
     crop_size = (width/4, height/4, 3*width/4, 3*height/4)
     img = img.crop(crop_size)
-    img.show()
-    # cutoff = 15 
-    # hash0 = imagehash.average_hash(img)
-    img = np.atleast_3d(img)
-
-    for hero in os.listdir("./heroes"):
-        hero_img = Image.open("./heroes/" + hero) 
-    
-        hero_img = np.atleast_3d(hero_img)
-        H, W, D = hero_img.shape[:3]
-        h, w = img.shape[:2]
-
-        # Integral image and template sum per channel
-        sat = img.cumsum(1).cumsum(0)
-        hero_imgsum = np.array([hero_img[:, :, i].sum() for i in range(D)])
-
-        # Calculate lookup table for all the possible windows
-        iA, iB, iC, iD = sat[:-h, :-w], sat[:-h, w:], sat[h:, :-w], sat[h:, w:] 
-        lookup = iD - iB - iC + iA
-        # Possible matches
-        possible_match = np.where(np.logical_and.reduce([lookup[..., i] == hero_imgsum[i] for i in range(D)]))
-
-        # Find exact match
-        for y, x in zip(*possible_match):
-            if np.all(img[y+1:y+h+1, x+1:x+w+1] == hero_img):
-                return hero
-
-    return None
+    # for hero in os.listdir("./heroes"):
+            
 
 if __name__ == "__main__":
+    # printScreen()
     img = getTopBar("8le3puzyk45y.png")
     heroPortraits = getHeroPortraits(img)
     radiant = heroPortraits[0:5]
